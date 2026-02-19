@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1f2937, #111827);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: #1e293b;
+            padding: 30px;
+            width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: #334155;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .option:hover {
+            background: #475569;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            background: #f59e0b;
+            color: black;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #fbbf24;
+        }
+
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="question">Question here</h2>
+    <div id="options"></div>
+    <button onclick="nextQuestion()">Next</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const quiz = [
+        {
+            question: "Which AWS service is used for virtual servers?",
+            options: ["S3", "EC2", "RDS", "Lambda"],
+            answer: "EC2"
+        },
+        {
+            question: "Which service is used for object storage?",
+            options: ["EBS", "EC2", "S3", "CloudFront"],
+            answer: "S3"
+        },
+        {
+            question: "Which service is serverless compute?",
+            options: ["Lambda", "EC2", "Elastic Beanstalk", "Lightsail"],
+            answer: "Lambda"
+        },
+        {
+            question: "Which database service is fully managed relational DB?",
+            options: ["DynamoDB", "RDS", "Redshift", "Aurora Serverless"],
+            answer: "RDS"
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedOption = null;
+
+    function loadQuestion() {
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        optionsEl.innerHTML = "";
+
+        questionEl.textContent = quiz[currentQuestion].question;
+
+        quiz[currentQuestion].options.forEach(option => {
+            const div = document.createElement("div");
+            div.textContent = option;
+            div.classList.add("option");
+
+            div.onclick = () => {
+                document.querySelectorAll(".option").forEach(opt => {
+                    opt.style.background = "#334155";
+                });
+                div.style.background = "#16a34a";
+                selectedOption = option;
+            };
+
+            optionsEl.appendChild(div);
+        });
+    }
+
+    function nextQuestion() {
+        if (!selectedOption) {
+            alert("Please select an option!");
+            return;
+        }
+
+        if (selectedOption === quiz[currentQuestion].answer) {
+            score++;
+        }
+
+        selectedOption = null;
+        currentQuestion++;
+
+        if (currentQuestion < quiz.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.querySelector(".quiz-container").innerHTML = `
+            <h2>Quiz Completed 🎉</h2>
+            <div class="result">Your Score: ${score} / ${quiz.length}</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        `;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
